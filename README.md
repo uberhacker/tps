@@ -27,7 +27,6 @@ $ terminus plugin registry | reg remove <URL to plugin Git registry 1> [<URL to 
 ```
 
 ## Examples:
-```
 Search for all plugins with the word `awesome` in the plugin name or title:
 ```
 $ terminus plugin search awesome
