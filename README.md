@@ -9,20 +9,19 @@ Refer to the [Terminus Wiki](https://github.com/pantheon-systems/terminus/wiki/P
 Windows users should install and run `terminus` in [Git for Windows](https://git-for-windows.github.io/).
 
 ## Usage:
-```
 Search for plugin(s) *(Partial strings perform a fuzzy search)*:
 ```
 $ terminus plugin search plugin-name-1 [plugin-name-2] ...
 ```
-Add plugin Git registries:
+Add searchable plugin Git registries:
 ```
 $ terminus plugin registry | reg add <URL to plugin Git registry 1> [<URL to plugin Git registry 2>] ...
 ```
-List plugin Git registries:
+List searchable plugin Git registries:
 ```
 $ terminus plugin registry | reg list
 ```
-Remove plugin Git registries:
+Remove searchable plugin Git registries:
 ```
 $ terminus plugin registry | reg remove <URL to plugin Git registry 1> [<URL to plugin Git registry 2>] ...
 ```
@@ -49,3 +48,6 @@ Remove a searchable plugin Git registry:
 ```
 $ terminus plugin reg remove https://github.com/path/to/plugin/registry
 ```
+
+## Manage:
+To add, list, update and remove plugins, see the companion plugin [Terminus Plugin Manager](https://github.com/uberhacker/tpm).
