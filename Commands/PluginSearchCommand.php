@@ -175,7 +175,7 @@ class PluginSearchCommand extends TerminusCommand {
     - uberhacker
 YML;
       $handle = fopen($reg_yml, "w");
-      fwrite($handle, $header);
+      fwrite($handle, "$header\n");
       fwrite($handle, $registries);
       fclose($handle);
     }
