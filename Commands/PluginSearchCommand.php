@@ -8,7 +8,7 @@ use Terminus\Exceptions\TerminusException;
 use Terminus\Utils;
 
 /**
- * Search for Terminus plugins
+ * Manage Terminus plugins
  *
  * @command plugin
  */
