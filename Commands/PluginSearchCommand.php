@@ -45,11 +45,32 @@ class PluginSearchCommand extends TerminusCommand {
       $message = "No plugins were found.";
       $this->log()->notice($message);
     } else {
+      $rows = array();
+      $labels = [
+        'location'    => 'Location',
+        'description' => 'Description',
+      ];
+      $start = microtime(true) * 10000;
       $message = "The following plugins were found:";
       $this->log()->notice($message);
-      foreach ($plugins as $plugin => $title) {
-        $this->log()->notice($title);
+      foreach ($plugins as $plugin => $description) {
+        $rows[] = [
+          'location'    => $plugin,
+          'description' => $description,
+        ];
       }
+      // Output the plugin list in table format.
+      $this->output()->outputRecordList($rows, $labels);
+      $count = count($rows);
+      $plural = '';
+      if ($count > 1) {
+        $plural = 's';
+      }
+      $end = microtime(true) * 10000;
+      $elapsed = round($end - $start);
+      $message = "Found {$count} plugin{$plural} in {$elapsed} sec.";
+      $message .= "  Use 'terminus plugin install' to add plugins.";
+      $this->log()->notice($message);
     }
   }
 
@@ -363,9 +384,11 @@ YML;
                     }
                     foreach ($titles as $reg => $title) {
                       if ((stripos($reg, $arg) !== false) || (stripos($title, $arg) !== false)) {
-                        $count = 1;
-                        $title = str_replace(': ', '.git - ', $title, $count);
-                        $plugins[$reg] = str_replace('GitHub - ', 'https://github.com/', $title);
+                        $parts = explode(':', $title);
+                        if (isset($parts[1])) {
+                          $title = trim($parts[1]);
+                        }
+                        $plugins[$reg] = $title;
                       }
                     }
                   }
