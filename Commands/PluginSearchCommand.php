@@ -191,7 +191,6 @@ class PluginSearchCommand extends TerminusCommand {
 'https://github.com':
     - pantheon-systems
     - derimagia
-    - greg-1-anderson
     - pi-ron
     - sean-e-dietrich
     - uberhacker
