@@ -35,12 +35,16 @@ class PluginSearchCommand extends TerminusCommand {
    */
   public function search($args = array()) {
     if (empty($args)) {
-      $message = "Usage: terminus plugin search plugin-name-1";
+      $message = "Usage: terminus plugin search | find plugin-name-1";
       $message .= " [plugin-name-2] ...";
       $this->failure($message);
     }
 
+    $start = microtime(true);
     $plugins = $this->searchRegistries($args);
+    $end = microtime(true);
+    $elapsed = round($end - $start);
+
     if (empty($plugins)) {
       $message = "No plugins were found.";
       $this->log()->notice($message);
@@ -50,7 +54,6 @@ class PluginSearchCommand extends TerminusCommand {
         'location'    => 'Location',
         'description' => 'Description',
       ];
-      $start = microtime(true) * 10000;
       $message = "The following plugins were found:";
       $this->log()->notice($message);
       foreach ($plugins as $plugin => $description) {
@@ -66,8 +69,6 @@ class PluginSearchCommand extends TerminusCommand {
       if ($count > 1) {
         $plural = 's';
       }
-      $end = microtime(true) * 10000;
-      $elapsed = round($end - $start);
       $message = "Found {$count} plugin{$plural} in {$elapsed} sec.";
       $message .= "  Use 'terminus plugin install' to add plugins.";
       $this->log()->notice($message);
@@ -357,6 +358,7 @@ YML;
     $registries = $this->listRegistries();
     foreach ($registries as $registry) {
       foreach ($args as $arg) {
+      $this->log()->notice("Searching for '$arg' at $registry...");
         $url = $registry . '/' . $arg;
         if ($this->isValidUrl($url)) {
           if ($this->isValidPlugin($registry, $arg)) {
@@ -366,32 +368,41 @@ YML;
           $parts = @parse_url($registry);
           if (isset($parts['host'])) {
             $host = $parts['host'];
+            $path = $parts['path'];
             switch ($host) {
               case 'bitbucket.com':
                 // TODO: Add BitBucket parsing logic
                   break;
               case 'github.com':
-                $reg_data = @file_get_contents($registry . '?tab=repositories');
-                if (!empty($reg_data)) {
-                  $path = $parts['path'];
+                $page = 1;
+                $prev_matches = array();
+                while ($reg_data = @file_get_contents($registry . '?tab=repositories&page=' . $page)) {
                   $pattern = '|' . $path . '/(.*)".*codeRepository|U';
                   preg_match_all($pattern, $reg_data, $matches);
+                  if (empty($reg_data) || empty($matches) || ($matches == $prev_matches)) {
+                    break;
+                  }
+                  $prev_matches = $matches;
                   if (isset($matches[1])) {
                     foreach ($matches[1] as $match) {
                       if ($title = $this->isValidPlugin($registry, $match)) {
                         $titles["$registry/$match"] = $title;
                       }
                     }
-                    foreach ($titles as $reg => $title) {
-                      if ((stripos($reg, $arg) !== false) || (stripos($title, $arg) !== false)) {
-                        $parts = explode(':', $title);
-                        if (isset($parts[1])) {
-                          $title = trim($parts[1]);
+                    foreach ($titles as $reg => $desc) {
+                      if ((stripos($reg, $arg) !== false) || (stripos($desc, $arg) !== false)) {
+                        if (!isset($plugins[$reg])) {
+                          $this->log()->notice("Plugin found!");
+                          $parts = explode(':', $desc);
+                          if (isset($parts[1])) {
+                            $desc = trim($parts[1]);
+                          }
+                          $plugins[$reg] = $desc;
                         }
-                        $plugins[$reg] = $title;
                       }
                     }
                   }
+                  $page += 1;
                 }
                   break;
               default:
