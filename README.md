@@ -11,7 +11,7 @@ Windows users should install and run `terminus` in [Git for Windows](https://git
 ## Usage:
 Search for plugin(s) *(Partial strings perform a fuzzy search)*:
 ```
-$ terminus plugin search plugin-name-1 [plugin-name-2] ...
+$ terminus plugin search | find plugin-name-1 [plugin-name-2] ...
 ```
 Add searchable plugin Git registries:
 ```
@@ -30,6 +30,10 @@ $ terminus plugin registry | reg remove <URL to plugin Git registry 1> [<URL to 
 Search for all plugins with the word `awesome` in the plugin name or title:
 ```
 $ terminus plugin search awesome
+```
+Search for all plugins with the word `awesome` or `sauce` in the plugin name or title:
+```
+$ terminus plugin find awesome sauce
 ```
 Search for all plugins in searchable plugin Git registries:
 ```
