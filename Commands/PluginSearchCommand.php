@@ -194,6 +194,7 @@ class PluginSearchCommand extends TerminusCommand {
     - derimagia
     - lockr
     - pi-ron
+    - rvtraveller
     - sean-e-dietrich
     - uberhacker
 YML;
