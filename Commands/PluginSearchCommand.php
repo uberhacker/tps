@@ -192,6 +192,7 @@ class PluginSearchCommand extends TerminusCommand {
 'https://github.com':
     - pantheon-systems
     - derimagia
+    - DinkumInteractive
     - lockr
     - pi-ron
     - rvtraveller
