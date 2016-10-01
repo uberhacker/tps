@@ -87,16 +87,17 @@ class PluginSearchCommand extends TerminusCommand {
   public function registry($args = array()) {
     $usage = "Usage: terminus plugin registry | reg add | list | remove";
     $usage .= " <URL to plugin Git registry 1>";
-    $usage .= " [<URL to plugin Git registry 2>] ...";
+    $usage .= " [<URL to plugin Git registry 2>] ... | restore";
     if (empty($args)) {
       $this->failure($usage);
     }
     $cmd = array_shift($args);
-    $valid_cmds = array('add', 'list', 'remove');
+    $valid_cmds = array('add', 'list', 'remove', 'restore');
     if (!in_array($cmd, $valid_cmds)) {
       $this->failure($usage);
     }
     switch ($cmd) {
+      // Add a registry
       case 'add':
         if (empty($args)) {
           $this->failure($usage);
@@ -105,6 +106,8 @@ class PluginSearchCommand extends TerminusCommand {
           $this->addRegistry($arg);
         }
           break;
+
+      // List registries
       case 'list':
         $registries = $this->listRegistries();
         if (empty($registries)) {
@@ -123,6 +126,8 @@ class PluginSearchCommand extends TerminusCommand {
           $this->log()->notice($message);
         }
           break;
+
+      // Remove a registry
       case 'remove':
         if (empty($args)) {
           $this->failure($usage);
@@ -130,6 +135,15 @@ class PluginSearchCommand extends TerminusCommand {
         foreach ($args as $arg) {
           $this->removeRegistry($arg);
         }
+          break;
+
+      // Restore the list of well-known registries
+      case 'restore':
+        $reg_yml = $this->getRegistriesPath();
+        exec("rm -f $reg_yml");
+        $this->getRegistries();
+        $message = "The list of well-known registries has been restored.";
+        $this->log()->notice($message);
           break;
     }
   }
