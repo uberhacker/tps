@@ -212,6 +212,7 @@ class PluginSearchCommand extends TerminusCommand {
     - rvtraveller
     - sean-e-dietrich
     - uberhacker
+    - ucb-ist-drupal
 YML;
       $handle = fopen($reg_yml, "w");
       fwrite($handle, "$header\n");
